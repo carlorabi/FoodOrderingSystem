@@ -186,7 +186,7 @@ def place_order(menu, customer):
                     break
             if not found_item:
                 print("Item not found in the order.")
-                
+
         elif action == '4':
             break
         else:
@@ -205,7 +205,7 @@ def clear_screen():
 def display_menu(menu):
     print("Menu:")
     print("-----------------------------------------")
-    print("| {:<17s} | {:>17s} |".format("Item", "Price"))
+    print("| {:<17s} | {:>17s} |".format("Food", "Price"))
     print("-----------------------------------------")
     for item in menu.items:
         print("| {:<17s} | {:>17.2f} |".format(item.name, item.price))
@@ -230,17 +230,26 @@ menu.add_item(item5)
 
 customers = []
 
+
+def print_menu_button(label):
+    print(f"  \u25A0 {label} \u25A0  ")
+
+
 while True:
     clear_screen()
     print_banner()
-    print("\n1. Show Menu")
-    print("2. Add Item to Menu")
-    print("3. Remove Item from Menu")
-    print("4. Place Order")
-    print("5. Total Orders for Customer")
-    print("6. Exit")
+    print()
+    print_menu_button("1. Show Menu")
+    print_menu_button("2. Add Item to Menu")
+    print_menu_button("3. Remove Item from Menu")
+    print_menu_button("4. Place Order")
+    print_menu_button("5. Total Orders for Customer")
+    print_menu_button("6. Exit")
 
-    choice = input("\nEnter your choice: ")
+    choice = input("\nEnter the number of your choice: ")
+
+    # Rest of your code...
+
 
     if choice == '1':
         clear_screen()
@@ -299,7 +308,16 @@ while True:
         input("Press Enter to continue...")
 
     elif choice == '5':
-        customer_name = input("Enter the name of the customer: ")
+        if not customers:
+            print("\nNo customer(s) yet.")
+            input("Press Enter to continue...")
+            continue
+
+        print("Customers:")
+        for customer in customers:
+            print(customer.name)
+
+        customer_name = input("\nEnter the name of the customer: ")
         for customer in customers:
             if customer.name.lower() == customer_name.lower():
                 total_spent = customer.calculate_total_spent()
@@ -321,8 +339,10 @@ while True:
                 break
         else:
             print("Customer not found.")
-        
+            
         input("Press Enter to continue...")
+
+
 
     elif choice == '6':
         break
