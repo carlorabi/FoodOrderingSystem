@@ -87,13 +87,7 @@ def place_order(menu, customer):
     order = Order()
 
     print(f"Welcome, {customer.name}!")
-    menu.display_menu()
-
-def place_order(menu, customer):
-    order = Order()
-
-    print(f"Welcome, {customer.name}!")
-    menu.display_menu()
+    display_menu(menu)
 
     while True:
         choice = input("Enter the name of the item you want to order (or 'q' to quit): ")
@@ -195,6 +189,17 @@ def clear_screen():
         os.system('clear')  # For Linux/Mac
 
 
+def display_menu(menu):
+    print("Menu:")
+    print("-----------------------------------------")
+    print("| {:<17s} | {:>17s} |".format("Item", "Price"))
+    print("-----------------------------------------")
+    for item in menu.items:
+        print("| {:<17s} | {:>17.2f} |".format(item.name, item.price))
+    print("-----------------------------------------")
+
+
+
 # Main program
 menu = Menu()
 
@@ -222,28 +227,50 @@ while True:
     print("5. Total Orders for Customer")
     print("6. Exit")
 
-    choice = input("Enter your choice: ")
+    choice = input("\nEnter your choice: ")
 
     if choice == '1':
         clear_screen()
-        menu.display_menu()
+        display_menu(menu)
         input("Press Enter to continue...")
+
     elif choice == '2':
-        clear_screen()
-        item_name = input("Enter the name of the item: ")
-        item_price = float(input("Enter the price of the item: $"))
-        new_item = MenuItem(item_name, item_price)
-        menu.add_item(new_item)
-        print(f"{item_name} added to the menu.")
-        input("Press Enter to continue...")
+        while True:
+            clear_screen()
+            item_name = input("Enter the name of the item: ")
+            while True:
+                try:
+                    item_price = float(input("Enter the price of the item: $"))
+                    break
+                except ValueError:
+                    print("Invalid input. Please enter a numeric value.")
+            new_item = MenuItem(item_name, item_price)
+            menu.add_item(new_item)
+            print(f"{item_name} added to the menu.")
+            while True:
+                add_another = input("Do you want to add another item? (y/n): ")
+                if add_another.lower() == 'n':
+                    break
+                elif add_another.lower() == 'y':
+                    break
+                else:
+                    print("Invalid input. Please enter 'y' or 'n'.")
+            if add_another.lower() == 'n':
+                break
+            elif add_another.lower() != 'y':
+                continue
+
+
     elif choice == '3':
         clear_screen()
+        display_menu(menu)
         item_name = input("Enter the name of the item you want to remove: ")
         if menu.remove_item(item_name):
             print(f"{item_name} removed from the menu.")
         else:
             print("Item not found in the menu.")
         input("Press Enter to continue...")
+
     elif choice == '4':
         clear_screen()
         customer_name = input("Enter your name: ")
@@ -257,6 +284,7 @@ while True:
             customers.append(customer)
         place_order(menu, customer)
         input("Press Enter to continue...")
+
     elif choice == '5':
         customer_name = input("Enter the name of the customer: ")
         for customer in customers:
