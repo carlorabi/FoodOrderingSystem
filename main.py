@@ -102,12 +102,20 @@ def place_order(menu, customer):
             print(f"{item.name}: ${item.price:.2f} x {quantity} added to your order.")
         else:
             print("Invalid choice. Please try again.")
+            continue
+
+        while True:
+            add_another = input("Do you want to add another item? (y/n): ")
+            if add_another.lower() == 'n':
+                break
+            elif add_another.lower() != 'y':
+                print("Invalid input. Please enter 'y' or 'n'.")
+            else:
+                break
 
     print("Your order:")
     for index, order_item in enumerate(order.items):
         print(f"{index+1}. {order_item.menu_item.name}: ${order_item.menu_item.price:.2f} | Quantity: {order_item.quantity}")
-
-
 
     total_cost = order.calculate_total_cost()
     print(f"Total cost: ${total_cost:.2f}")
@@ -117,6 +125,9 @@ def place_order(menu, customer):
 
         if action == '1':
             cls()
+            print("Current order:")
+            for index, item in enumerate(order.items, start=1):
+                print(f"{index}. {item.menu_item.name}: ${item.menu_item.price:.2f} x Quantity {item.quantity}")
             item_name = input("Enter the name of the item you want to change: ")
             found_item = False
             for order_item in order.items:
@@ -159,9 +170,12 @@ def place_order(menu, customer):
             if not found_item:
                 print("Item not found in the order.")
                 # Print the updated order
-                
+
         elif action == '3':
             cls()
+            print("Current order:")
+            for index, item in enumerate(order.items, start=1):
+                print(f"{index}. {item.menu_item.name}: ${item.menu_item.price:.2f} x Quantity {item.quantity}")
             item_name = input("Enter the name of the item you want to delete: ")
             found_item = False
             for order_item in order.items:
@@ -172,14 +186,13 @@ def place_order(menu, customer):
                     break
             if not found_item:
                 print("Item not found in the order.")
+                
         elif action == '4':
             break
         else:
             print("Invalid choice. Please try again.")
 
-
     customer.add_order(order)
-
 
 
 def clear_screen():
@@ -296,11 +309,21 @@ while True:
                     print("Order:")
                     for index, order_item in enumerate(order.items, start=1):
                         print(f"{index}. {order_item.menu_item.name}: ${order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
+                while True:
+                    bill_amount = input("Enter the bill amount: $")
+                    try:
+                        bill_amount = float(bill_amount)
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a numeric value.")
+                remaining_balance = bill_amount - total_spent
+                print(f"Change for {customer.name}: ${remaining_balance:.2f}")
                 break
         else:
             print("Customer not found.")
-
+        
         input("Press Enter to continue...")
+
     elif choice == '6':
         break
     else:
