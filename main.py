@@ -54,7 +54,7 @@ def place_order(menu, customer):
         print_menu_button("1. Change Item")
         print_menu_button("2. Change Quantity")
         print_menu_button("3. Delete Item") 
-        print_menu_button("4. Continue")
+        print_menu_button("4. Exit")
 
         action = input("\nEnter your choice: ")
         if action == '1':
@@ -139,7 +139,7 @@ def place_order(menu, customer):
         else:
             print("Invalid choice. Please try again.")
 
-        customer.add_order(order)
+    return order
 
 
 def clear_screen():
@@ -244,14 +244,16 @@ while True:
         if not customer:
             customer = Customer(customer_name)
             customers.append(customer)
-        place_order(menu, customer)
+        order = place_order(menu, customer)
+        if order.items:  # Check if any items were added to the order
+            customer.add_order(order)
         input("Press Enter to continue...")
 
 
     #if chose 5
     elif choice == '5':
         if not customers:
-            print("\nNo customer(s) yet.")  # shows when no customer added
+            print("\nNo customer(s) yet.")
             input("Press Enter to continue...")
             continue
 
@@ -260,13 +262,13 @@ while True:
             print(customer.name)
 
         while True:
-            customer_name = input("\nEnter the name of the customer (or 'exit' to go back): ")
-            if customer_name.lower() == 'exit':
+            customer_input = input("\nEnter the name of the customer (or 'exit' to go back): ")
+            if customer_input.lower() == 'exit':
                 break
 
             found_customer = None
             for customer in customers:
-                if customer.name.lower() == customer_name.lower():
+                if customer_input.lower() == customer.name.lower():
                     found_customer = customer
                     break
 
@@ -274,39 +276,39 @@ while True:
                 total_spent = found_customer.calculate_total_spent()
                 print(f"\nTotal spent by {found_customer.name}: ₱{total_spent:.2f}")
                 has_orders = False
-                for order in found_customer.orders:
-                    print("\nOrder(s):")
-                    for index, order_item in enumerate(order.items, start=1):
-                        print(f"{index}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
+                if found_customer.orders:
                     has_orders = True
+                    print("\nOrder(s):")
+                    for order in found_customer.orders:
+                        for index, order_item in enumerate(order.items, start=1):
+                            print(f"{index}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
                 if not has_orders:
                     print(f"No orders found for {found_customer.name}.")
                     input("Press Enter to continue...")
-                else:
-                    while True:
-                        bill_amount = input("Enter the bill amount: ₱")
-                        try:
-                            bill_amount = float(bill_amount)
-                            break
-                        except ValueError:
-                            print("Invalid input. Please enter a numeric value.")
-                    remaining_balance = bill_amount - total_spent
-                    print(f"Change for {found_customer.name}: ₱{remaining_balance:.2f}")
-                    customers.remove(found_customer)  # Remove the customer from the list
-                    print_receipt(found_customer, bill_amount, remaining_balance)
-                    input("Press Enter to continue...")
-                break
+                    continue
 
+                while True:
+                    bill_amount = input("Enter the bill amount: ₱")
+                    try:
+                        bill_amount = float(bill_amount)
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a numeric value.")
+                remaining_balance = bill_amount - total_spent
+                print(f"Change for {found_customer.name}: ₱{remaining_balance:.2f}")
+                customers.remove(found_customer)  # Remove the customer from the list
+                print_receipt(found_customer, bill_amount, remaining_balance)
+                input("Press Enter to continue...")
+                break
             else:
                 print("Customer not found.")
                 continue
 
 
-    #if chose 6
-    elif choice == '6':
+    elif choice == "6":
         print_exit_banner()
-
-        break
+        break  # Exit the loop and end the program
+    
     else:
         print("Invalid choice. Please try again.")
         input("Press Enter to continue...")
