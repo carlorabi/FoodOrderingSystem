@@ -29,9 +29,6 @@ def place_order(menu, customer):
             quantity = int(input("Enter the quantity: "))
             order.add_item(item, quantity)
             print(f"{item.name}: ₱{item.price:.2f} x {quantity} added to your order.")
-        else:
-            print("Invalid choice. Please try again.")
-            continue
 
         while True:
             add_another = input("Do you want to add another item? (y/n): ")
@@ -42,7 +39,11 @@ def place_order(menu, customer):
             else:
                 break
 
-    print("Your order:")
+        if add_another.lower() == 'n':
+            break
+
+
+    print("\nYour order:")
     for index, order_item in enumerate(order.items):
         print(f"{index+1}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} | Quantity: {order_item.quantity}")
 
@@ -90,7 +91,7 @@ def place_order(menu, customer):
             print("Current order:")
             for index, item in enumerate(order.items, start=1):
                 print(f"{index}. {item.menu_item.name}: ₱{item.menu_item.price:.2f} x Quantity {item.quantity}")
-            item_name = input("Enter the name of the item you want to change quantity: ")
+            item_name = input("\nEnter the name of the item you want to change quantity: ")
             found_item = False
             for order_item in order.items:
                 if order_item.menu_item.name.lower() == item_name.lower():
@@ -116,7 +117,7 @@ def place_order(menu, customer):
             print("Current order:")
             for index, item in enumerate(order.items, start=1):
                 print(f"{index}. {item.menu_item.name}: ₱{item.menu_item.price:.2f} x Quantity {item.quantity}")
-            item_name = input("Enter the name of the item you want to delete: ")
+            item_name = input("\nEnter the name of the item you want to delete: ")
             found_item = False
             for order_item in order.items:
                 if order_item.menu_item.name.lower() == item_name.lower():
@@ -289,7 +290,7 @@ while True:
                     continue
 
                 while True:
-                    bill_amount = input("Enter the bill amount: ₱")
+                    bill_amount = input("\nEnter the bill amount: ₱")
                     try:
                         bill_amount = float(bill_amount)
                         break
