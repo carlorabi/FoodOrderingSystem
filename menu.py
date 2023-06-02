@@ -1,6 +1,3 @@
-# menu.py
-from menu_item import MenuItem
-
 class Menu:
     def __init__(self):
         self.items = []
@@ -28,3 +25,14 @@ class Menu:
         else:
             for item in self.items:
                 print(item)
+
+
+def display_menu(menu):
+    print("Menu:")
+    print("-----------------------------------------")
+    print("| {:<17s} | {:>17s} |".format("Food", "Price"))  #for table format
+    print("-----------------------------------------")
+    for item in menu.items:
+        print("| {:<17s} | {:>17.2f} |".format(item.name, item.price))
+    print("-----------------------------------------")
+

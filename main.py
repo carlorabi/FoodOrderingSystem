@@ -1,82 +1,10 @@
-from menu import Menu
+from menu import Menu, display_menu
+from menu_item import MenuItem
 from customer import Customer
 from order import Order
-from order_item import OrderItem
 from banner import print_banner, print_exit_banner
 from receipt import print_receipt
 import os
-
-class MenuItem:
-    def __init__(self, name, price):
-        self.name = name
-        self.price = price
-
-    def __str__(self):
-        return f"{self.name}: ₱{self.price:.2f}"
-
-
-class Menu:
-    def __init__(self):
-        self.items = []
-
-    def add_item(self, item):
-        self.items.append(item)
-
-    def remove_item(self, item_name):
-        for item in self.items:
-            if item.name.lower() == item_name.lower():
-                self.items.remove(item)
-                return True
-        return False
-
-    def find_item(self, item_name):
-        for item in self.items:
-            if item.name.lower() == item_name.lower():
-                return item
-        return None
-
-    def display_menu(self):
-        print("Menu:")
-        if not self.items:
-            print("No items in the menu.")
-        else:
-            for item in self.items:
-                print(item)
-
-
-class OrderItem:
-    def __init__(self, menu_item, quantity):
-        self.menu_item = menu_item
-        self.quantity = quantity
-
-    def get_subtotal(self):
-        return self.menu_item.price * self.quantity
-
-    def __str__(self):
-        return f"{self.menu_item.name} (Quantity: {self.quantity})"
-
-
-class Order:
-    def __init__(self):
-        self.items = []
-
-    def add_item(self, menu_item, quantity):
-        order_item = OrderItem(menu_item, quantity)
-        self.items.append(order_item)
-
-    def calculate_total_cost(self):
-        total_cost = 0
-        for order_item in self.items:
-            total_cost += order_item.menu_item.price * order_item.quantity
-        return total_cost
-
-    def __str__(self):
-        order_str = ""
-        for index, order_item in enumerate(self.items):
-            order_str += f"{index+1}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x {order_item.quantity}\n"
-        return order_str.strip()
-
-
 
 
 
@@ -87,7 +15,7 @@ def cls():
 def place_order(menu, customer):
     order = Order()
 
-    print(f"Welcome, {customer.name}!")
+    print(f"Welcome {customer.name} to Order it!")
     display_menu(menu)
 
     while True:
@@ -122,24 +50,34 @@ def place_order(menu, customer):
     print(f"Total cost: ₱{total_cost:.2f}")
 
     while True:
-        action = input("\nDo you want to make any changes to your order? (1 - Change item, 2 - Change quantity, 3 - Delete item, 4 - Continue): ")
+        print("\nDo you want to make any changes to your order?")
+        print_menu_button("1. Change Item")
+        print_menu_button("2. Change Quantity")
+        print_menu_button("3. Delete Item") 
+        print_menu_button("4. Continue")
 
+        action = input("\nEnter your choice: ")
         if action == '1':
             cls()
             print("Current order:")
             for index, item in enumerate(order.items, start=1):
                 print(f"{index}. {item.menu_item.name}: ₱{item.menu_item.price:.2f} x Quantity {item.quantity}")
-            item_name = input("Enter the name of the item you want to change: ")
+            item_name = input("\nEnter the name of the item you want to change: ")
             found_item = False
             for order_item in order.items:
                 if order_item.menu_item.name.lower() == item_name.lower():
-                    new_item_name = input("Enter the new item name: ")
-                    new_item_quantity = int(input("Enter the new quantity: "))
+                    display_menu(menu)
+                    new_item_name = input("\nEnter the new item name: ")
+                    new_item_quantity = int(input("Enter the quantity: "))
                     new_item = menu.find_item(new_item_name)
                     if new_item:
                         order_item.menu_item = new_item
                         order_item.quantity = new_item_quantity
                         print("Item updated successfully.")
+                        print("\nUpdated order:") # Print the updated order
+                        for index, order_item in enumerate(order.items, start=1):
+                            print(f"{index}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
+
                     else:
                         print("Invalid item name. Item not updated.")
                     found_item = True
@@ -184,17 +122,24 @@ def place_order(menu, customer):
                 if order_item.menu_item.name.lower() == item_name.lower():
                     order.items.remove(order_item)
                     print(f"{order_item} deleted from the order.")
+                    print("\nUpdated order:") # Print the updated order
+                    for index, order_item in enumerate(order.items, start=1):
+                        print(f"{index}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
                     found_item = True
                     break
             if not found_item:
                 print("Item not found in the order.")
+
+            # Check if the order items list is empty
+            if not order.items:
+                print("No order found.")
 
         elif action == '4':
             break
         else:
             print("Invalid choice. Please try again.")
 
-    customer.add_order(order)
+        customer.add_order(order)
 
 
 def clear_screen():
@@ -204,25 +149,15 @@ def clear_screen():
         os.system('clear')  # For Linux/Mac
 
 
-def display_menu(menu):
-    print("Menu:")
-    print("-----------------------------------------")
-    print("| {:<17s} | {:>17s} |".format("Food", "Price"))  #for table format
-    print("-----------------------------------------")
-    for item in menu.items:
-        print("| {:<17s} | {:>17.2f} |".format(item.name, item.price))
-    print("-----------------------------------------")
-
-
 
 # Main program
 menu = Menu()
 
-item1 = MenuItem("Burger", 5.99)
-item2 = MenuItem("Pizza", 8.99)
-item3 = MenuItem("Fries", 2.99)
-item4 = MenuItem("Salad", 4.99)
-item5 = MenuItem("Ice Cream", 3.99)
+item1 = MenuItem("Burger", 25.00)
+item2 = MenuItem("Pizza", 75.00)
+item3 = MenuItem("Fries", 25.00)
+item4 = MenuItem("Takoyaki", 40.00)
+item5 = MenuItem("Ice Cream", 20.00)
 
 menu.add_item(item1)
 menu.add_item(item2)
@@ -329,11 +264,15 @@ while True:
             if customer.name.lower() == customer_name.lower():
                 total_spent = customer.calculate_total_spent()
                 print(f"Total spent by {customer.name}: ₱{total_spent:.2f}")
-                print("Customer's orders:")
+                has_orders = False
                 for order in customer.orders:
-                    print("Order:")
+                    print("\nOrder(s):")
                     for index, order_item in enumerate(order.items, start=1):
                         print(f"{index}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
+                if not has_orders:
+                    print(f"No orders found for {customer.name}.")
+                    input("Press Enter to continue...")
+                    break  # Exit the loop if no orders found.
                 while True:
                     bill_amount = input("Enter the bill amount: ₱")
                     try:
@@ -344,13 +283,13 @@ while True:
                 remaining_balance = bill_amount - total_spent
                 print(f"Change for {customer.name}: ₱{remaining_balance:.2f}")
                 customers.remove(customer) # Remove the customer from the list
-                print_receipt(customer, bill_amount, remaining_balance)  
+                print_receipt(customer, bill_amount, remaining_balance)
+                input("Press Enter to continue...")
                 break
 
         else:
             print("Customer not found.")
-
-        input("Press Enter to continue...")
+            input("Press Enter to continue...")
 
 
     #if chose 6
