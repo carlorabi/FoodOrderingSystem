@@ -3,6 +3,7 @@ from customer import Customer
 from order import Order
 from order_item import OrderItem
 from banner import print_banner, print_exit_banner
+from receipt import print_receipt
 import os
 
 class MenuItem:
@@ -342,8 +343,10 @@ while True:
                         print("Invalid input. Please enter a numeric value.")
                 remaining_balance = bill_amount - total_spent
                 print(f"Change for {customer.name}: ₱{remaining_balance:.2f}")
-                customers.remove(customer)  # Remove the customer from the list
+                customers.remove(customer) # Remove the customer from the list
+                print_receipt(customer, bill_amount, remaining_balance)  
                 break
+
         else:
             print("Customer not found.")
 
@@ -353,7 +356,7 @@ while True:
     #if chose 6
     elif choice == '6':
         print_exit_banner()
-        
+
         break
     else:
         print("Invalid choice. Please try again.")
