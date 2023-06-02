@@ -258,8 +258,9 @@ while True:
             continue
 
         print("Customers:")
-        for customer in customers:
-            print(customer.name)
+        for index, customer in enumerate(customers, start=1):
+            print(f"{index}. {customer.name}")
+
 
         while True:
             customer_input = input("\nEnter the name of the customer (or 'exit' to go back): ")
