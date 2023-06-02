@@ -251,7 +251,7 @@ while True:
     #if chose 5
     elif choice == '5':
         if not customers:
-            print("\nNo customer(s) yet.")  #shows when no customer added
+            print("\nNo customer(s) yet.")  # shows when no customer added
             input("Press Enter to continue...")
             continue
 
@@ -259,37 +259,47 @@ while True:
         for customer in customers:
             print(customer.name)
 
-        customer_name = input("\nEnter the name of the customer: ")
-        for customer in customers:
-            if customer.name.lower() == customer_name.lower():
-                total_spent = customer.calculate_total_spent()
-                print(f"Total spent by {customer.name}: ₱{total_spent:.2f}")
+        while True:
+            customer_name = input("\nEnter the name of the customer (or 'exit' to go back): ")
+            if customer_name.lower() == 'exit':
+                break
+
+            found_customer = None
+            for customer in customers:
+                if customer.name.lower() == customer_name.lower():
+                    found_customer = customer
+                    break
+
+            if found_customer:
+                total_spent = found_customer.calculate_total_spent()
+                print(f"\nTotal spent by {found_customer.name}: ₱{total_spent:.2f}")
                 has_orders = False
-                for order in customer.orders:
+                for order in found_customer.orders:
                     print("\nOrder(s):")
                     for index, order_item in enumerate(order.items, start=1):
                         print(f"{index}. {order_item.menu_item.name}: ₱{order_item.menu_item.price:.2f} x Quantity {order_item.quantity}")
+                    has_orders = True
                 if not has_orders:
-                    print(f"No orders found for {customer.name}.")
+                    print(f"No orders found for {found_customer.name}.")
                     input("Press Enter to continue...")
-                    break  # Exit the loop if no orders found.
-                while True:
-                    bill_amount = input("Enter the bill amount: ₱")
-                    try:
-                        bill_amount = float(bill_amount)
-                        break
-                    except ValueError:
-                        print("Invalid input. Please enter a numeric value.")
-                remaining_balance = bill_amount - total_spent
-                print(f"Change for {customer.name}: ₱{remaining_balance:.2f}")
-                customers.remove(customer) # Remove the customer from the list
-                print_receipt(customer, bill_amount, remaining_balance)
-                input("Press Enter to continue...")
+                else:
+                    while True:
+                        bill_amount = input("Enter the bill amount: ₱")
+                        try:
+                            bill_amount = float(bill_amount)
+                            break
+                        except ValueError:
+                            print("Invalid input. Please enter a numeric value.")
+                    remaining_balance = bill_amount - total_spent
+                    print(f"Change for {found_customer.name}: ₱{remaining_balance:.2f}")
+                    customers.remove(found_customer)  # Remove the customer from the list
+                    print_receipt(found_customer, bill_amount, remaining_balance)
+                    input("Press Enter to continue...")
                 break
 
-        else:
-            print("Customer not found.")
-            input("Press Enter to continue...")
+            else:
+                print("Customer not found.")
+                continue
 
 
     #if chose 6
