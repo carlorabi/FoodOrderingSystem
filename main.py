@@ -2,7 +2,7 @@ from menu import Menu
 from customer import Customer
 from order import Order
 from order_item import OrderItem
-from banner import print_banner
+from banner import print_banner, print_exit_banner
 import os
 
 class MenuItem:
@@ -233,7 +233,7 @@ customers = []
 
 
 def print_menu_button(label):
-    print(f"  \u25A0 {label} \u25A0  ")
+    print(f"  \u25A0 {label} ")
 
 
 while True:
@@ -352,6 +352,8 @@ while True:
 
     #if chose 6
     elif choice == '6':
+        print_exit_banner()
+        
         break
     else:
         print("Invalid choice. Please try again.")
