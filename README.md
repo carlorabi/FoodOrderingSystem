@@ -1,6 +1,6 @@
 # FoodOrderingSystem
 Console
-This is a simple food ordering system implemented in Python. It allows users to view a menu, add or remove items from the menu, place orders, and calculate the total cost of the order. The system incorporates Object-Oriented Programming (OOP) principles for code organization and reusability.
+* This is a simple food ordering system implemented in Python. It allows users to view a menu, add or remove items from the menu, place orders, and calculate the total cost of the order. The system incorporates Object-Oriented Programming (OOP) principles for code organization and reusability.
 
 # Features
 * Display menu: Users can view the available food items on the menu.
